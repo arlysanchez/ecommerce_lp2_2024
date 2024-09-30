@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import upeu.edu.pe.ecommerce.app.service.CategoriesServices;
 import upeu.edu.pe.ecommerce.app.service.ProductService;
+import upeu.edu.pe.ecommerce.infrastructure.entity.CategoryEntity;
 import upeu.edu.pe.ecommerce.infrastructure.entity.ProductEntity;
 import upeu.edu.pe.ecommerce.infrastructure.entity.UserEntity;
 
@@ -27,15 +29,22 @@ import upeu.edu.pe.ecommerce.infrastructure.entity.UserEntity;
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoriesServices categoriesServices;
+
+    public ProductController(ProductService productService, CategoriesServices categoriesServices) {
+        this.productService = productService;
+        this.categoriesServices = categoriesServices;
+    }
+    
     private final Logger log = LoggerFactory.getLogger(ProductController.class);
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    
 
     //crear nuevo producto
     @GetMapping("/create")
-    public String create(){
+    public String create( Model model){
+        Iterable<CategoryEntity> categorias = categoriesServices.getCategories();
+        model.addAttribute("listCategories", categorias);
         return "admin/products/create";
     }
     //guardar producto
