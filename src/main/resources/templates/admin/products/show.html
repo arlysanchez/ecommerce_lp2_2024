@@ -29,7 +29,7 @@
                                 <td th:text="${product.CategoryEntity.name}"></td>
                                 <td>
                                     <a class="btn btn-warning" href="#">Editar</a>
-                                    <a class="btn btn-danger" href="#">Eliminar</a>
+                                    <a class="btn btn-danger" th:href="@{/admin/products/delete/{id} (id = ${product.id})}">Eliminar</a>
                                     <a class="btn btn-info" href="#">Inventario</a>
 
                                     <a></a>

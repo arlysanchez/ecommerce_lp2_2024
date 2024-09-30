@@ -49,8 +49,11 @@ public class ProductController {
     }
     //guardar producto
      @PostMapping("/save-product")
-    public String saveProduct(ProductEntity product,@RequestParam("img")MultipartFile multipartFile) throws IOException {
+    public String saveProduct(ProductEntity product, @RequestParam("category_id") Integer category_id, @RequestParam("img")MultipartFile multipartFile) throws IOException {
         log.info("Nombre de producto: {}", product);
+         CategoryEntity cat = new CategoryEntity();
+         cat.setId(category_id);
+         product.setCategoryEntity(cat);
         productService.saveProduct(product, multipartFile);
         //return "admin/products/create";
         return "redirect:/admin";
