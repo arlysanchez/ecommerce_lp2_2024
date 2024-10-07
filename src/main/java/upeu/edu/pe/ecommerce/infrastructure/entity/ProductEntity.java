@@ -7,6 +7,7 @@ package upeu.edu.pe.ecommerce.infrastructure.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  *
@@ -38,8 +39,7 @@ public class ProductEntity {
               
       
     
-    public ProductEntity() {
-    }
+    
 
     public ProductEntity(Integer id, String code, String name, String description, String image, BigDecimal price, LocalDateTime dateCreated, LocalDateTime dateUpdated, UserEntity userEntity, CategoryEntity categoryEntity) {
         this.id = id;
@@ -136,6 +136,9 @@ public class ProductEntity {
         this.categoryEntity = categoryEntity;
     }
     
+    public ProductEntity() {
+        this.setCode(UUID.randomUUID().toString());
+    }
     
    
     
