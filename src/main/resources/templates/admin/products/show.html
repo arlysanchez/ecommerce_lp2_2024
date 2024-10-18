@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"> 
+    <html>
+        <head th:insert = "~{admin/template_admin::head}"></head>
+        <div th:insert = "~{admin/template_admin::header}"></div>
+       
+            <body>
+                <div class="container mt-5">
+                    <div class="d-flex justify-content-end">
+                        <a class="btn btn-primary" th:href="@{/admin/products/create}">Crear</a>
+                    </div>
+
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripcion</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Acciones</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product:${products}">
+                                <td th:text="${product.name}"></td>
+                                <td th:text="${product.description}"></td>
+                                <td th:text="${product.price}"></td>
+                                <td th:text="${product.CategoryEntity.name}"></td>
+                                <td>
+                                    <a class="btn btn-warning" href="#">Editar</a>
+                                    <a class="btn btn-danger" th:href="@{/admin/products/delete/{id} (id = ${product.id})}">Eliminar</a>
+                                    <a class="btn btn-info" href="#">Inventario</a>
+
+                                    <a></a>
+
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </body>
+            <div class="bg-body-tertiary text-center mt-auto" th:insert = "~{admin/template_admin::footer}"> </div>
+
+        </html>
