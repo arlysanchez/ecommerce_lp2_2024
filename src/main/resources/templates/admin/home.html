@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org"> 
+<html>
+    <head th:insert = "~{admin/template_admin::head}"></head>
+    <div th:insert = "~{admin/template_admin::header}"></div>
+    
+    <body>
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-3 col-md-6 mb-4 mt-5" th:each="product: ${products}" >
+                    <div class="card h-100">
+                   <img class="card-img-top" 
+                        th:src="@{/images/{img} (img = ${product.image})}">
+                   <div class="card-body">
+                       <p class="card-text" th:text="${product.name}">
+                           Nombre del producto</p>
+                   </div>
+                   <div class="card-footer">
+                       <a href="#" class="btn btn-success">Ver Producto</a>
+                   </div>
+                        
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+    </body>
+    
+    <div class="bg-body-tertiary text-center mt-auto" th:insert = "~{admin/template_admin::footer}"> </div>
+</html>
