@@ -4,6 +4,7 @@
  */
 package upeu.edu.pe.ecommerce.infrastructure.controller;
 
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import org.slf4j.*;
 import org.springframework.stereotype.Controller;
@@ -49,11 +50,16 @@ public class CartController {
     }
     
     @GetMapping("/get-cart")
-    public String getCart(Model model){
+    public String getCart(Model model, HttpSession httpSession){
         model.addAttribute("cart", 
                 cartServices.getItemCarts());
         model.addAttribute("total", 
                 cartServices.getTotalCart());
+         try {
+            model.addAttribute("nombre", httpSession.getAttribute("name").toString());
+            model.addAttribute("id", httpSession.getAttribute("iduser").toString());
+        } catch (Exception e) {
+        }
         return "user/cart/cart";
     }
     @GetMapping("/delete-item-cart/{id}")

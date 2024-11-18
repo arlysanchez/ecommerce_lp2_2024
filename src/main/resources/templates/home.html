@@ -2,8 +2,10 @@
 
 <html lang="es" xmlns:th="http://www.thymeleaf.org"> 
     <head th:insert = "~{user/template_user::head_user}"></head>
-    <div th:insert = "~{user/template_user::header_user}"></div>
     
+ <div  th:insert = "~{user/template_user::header_user}" th:if="${id==null}"></div>
+
+        <div th:insert = "~{user/template_user::userlogged}" th:unless="${id==null}"></div>    
     <body>
         <div class="container">
             <div class="row text-center">

@@ -4,6 +4,7 @@
  */
 package upeu.edu.pe.ecommerce.infrastructure.controller;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,26 +25,31 @@ import upeu.edu.pe.ecommerce.infrastructure.entity.StockEntity;
 @Controller
 @RequestMapping("/home")
 public class HomeController {
-   private final ProductService productService;
-   private final StockService stockService;
-   private final Logger log = LoggerFactory.getLogger(HomeController.class);
+
+    private final ProductService productService;
+    private final StockService stockService;
+    private final Logger log = LoggerFactory.getLogger(HomeController.class);
 
     public HomeController(ProductService productService, StockService stockService) {
         this.productService = productService;
         this.stockService = stockService;
     }
 
-      
-   @GetMapping
-    public String home(Model model){
-         Iterable<ProductEntity> products = productService.getProducts();
-        model.addAttribute("products",products);
+    @GetMapping
+    public String home(Model model, HttpSession httpSession) {
+        Iterable<ProductEntity> products = productService.getProducts();
+        model.addAttribute("products", products);
+        try {
+            model.addAttribute("nombre", httpSession.getAttribute("name").toString());
+            model.addAttribute("id", httpSession.getAttribute("iduser").toString());
+        } catch (Exception e) {
+        }
         return "home";
     }
-    
-      @GetMapping("/product-detail/{id}")
-    public String productDetail(@PathVariable Integer id, Model model) {
-          List<StockEntity> stocks = stockService.getStockByProductEntity(productService.getProductById(id));
+
+    @GetMapping("/product-detail/{id}")
+    public String productDetail(@PathVariable Integer id, Model model, HttpSession httpSession) {
+        List<StockEntity> stocks = stockService.getStockByProductEntity(productService.getProductById(id));
         log.info("Id product: {}", id);
         log.info("stock size: {}", stocks.size());
         log.info("stock : {}", stocks);
@@ -52,11 +58,13 @@ public class HomeController {
         model.addAttribute("product", productService.getProductById(id));
         model.addAttribute("stock", lastBalance);
         try {
-            model.addAttribute("id", 1);
+            model.addAttribute("id", httpSession.getAttribute("iduser").toString());
+            model.addAttribute("nombre", httpSession.getAttribute("name").toString());
+
         } catch (Exception e) {
 
         }
         return "user/productdetail";
     }
-    
+
 }

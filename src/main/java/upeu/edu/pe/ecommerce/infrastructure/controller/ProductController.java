@@ -4,6 +4,7 @@
  */
 package upeu.edu.pe.ecommerce.infrastructure.controller;
 
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.slf4j.*;
 import org.springframework.stereotype.Controller;
@@ -49,21 +50,21 @@ public class ProductController {
     }
     //guardar producto
      @PostMapping("/save-product")
-    public String saveProduct(ProductEntity product, @RequestParam("category_id") Integer category_id, @RequestParam("img")MultipartFile multipartFile) throws IOException {
+    public String saveProduct(ProductEntity product, @RequestParam("category_id") Integer category_id, @RequestParam("img")MultipartFile multipartFile,HttpSession httpSession) throws IOException {
         log.info("Nombre de producto: {}", product);
          CategoryEntity cat = new CategoryEntity();
          cat.setId(category_id);
          product.setCategoryEntity(cat);
-        productService.saveProduct(product, multipartFile);
+        productService.saveProduct(product, multipartFile,httpSession);
         //return "admin/products/create";
         return "redirect:/admin";
     }
     
     @GetMapping("/show")
-    public String showProduct(Model model){
+    public String showProduct(Model model, HttpSession httpSession){
         //log.info("id user desde la variable de session: {}");
         UserEntity user = new UserEntity();
-        user.setId(1);
+         user.setId(Integer.parseInt(httpSession.getAttribute("iduser").toString()));
         Iterable<ProductEntity> products = productService.getProductsByUser(user);
         model.addAttribute("products", products);
         return "admin/products/show";

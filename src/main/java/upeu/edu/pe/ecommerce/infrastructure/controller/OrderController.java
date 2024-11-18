@@ -4,6 +4,7 @@
  */
 package upeu.edu.pe.ecommerce.infrastructure.controller;
 
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import upeu.edu.pe.ecommerce.infrastructure.entity.UserEntity;
 @Controller
 @RequestMapping("/user/order")
 public class OrderController {
+
     public final CartServices cartServices;
     public final UserService userService;
     public final ProductService productService;
@@ -40,9 +42,9 @@ public class OrderController {
     public final OrderProductService orderProductService;
     public final StockService stockService;
     public final ValidateStock validateStock;
-    
-     private final Integer entradas = 0;
-     private final Logger log = LoggerFactory.getLogger(OrderController.class);
+
+    private final Integer entradas = 0;
+    private final Logger log = LoggerFactory.getLogger(OrderController.class);
 
     public OrderController(CartServices cartServices, UserService userService, ProductService productService, OrderService orderService, OrderProductService orderProductService, StockService stockService, ValidateStock validateStock) {
         this.cartServices = cartServices;
@@ -53,30 +55,32 @@ public class OrderController {
         this.stockService = stockService;
         this.validateStock = validateStock;
     }
-     
-     @GetMapping("/sumary-order")
-    public String showSumaryOrder(Model model){
-         UserEntity user = userService.findById(1);
+
+    @GetMapping("/sumary-order")
+    public String showSumaryOrder(Model model, HttpSession httpSession) {
+        UserEntity user = userService.findById(Integer.parseInt(httpSession.getAttribute("iduser").toString()));
         model.addAttribute("cart", cartServices.getItemCarts());
         model.addAttribute("total", cartServices.getTotalCart());
         model.addAttribute("user", user);
-       // model.addAttribute("id", httpSession.getAttribute("iduser").toString());
-       // model.addAttribute("nombre", httpSession.getAttribute("name").toString());
+        model.addAttribute("id", httpSession.getAttribute("iduser").toString());
+        model.addAttribute("nombre", httpSession.getAttribute("name").toString());
         return "user/summaryorder";
     }
+
     @GetMapping("/create-order")
-    public String createOrder(RedirectAttributes attributes) {
-        UserEntity user = userService.findById(1);
+    public String createOrder(RedirectAttributes attributes, HttpSession httpSession) {
+        UserEntity user = userService.findById(Integer.parseInt(httpSession.getAttribute("iduser").toString()));
+
         OrderEntity order = new OrderEntity();
         order.setDateCreated(LocalDateTime.now());
         order.setStatus("Proceso");
         order.setUserEntity(user);
         order.setTotal(cartServices.getTotalCart().toString());
         log.info("order : {}", order);
-        
+
         //guardar Order
         order = orderService.createOrder(order);
-        
+
         List<OrderProductEntity> orderProduct = new ArrayList<>();
         for (ItemCart itemCart : cartServices.getItemCarts()) {
             orderProduct.add(new OrderProductEntity(productService.getProductById(itemCart.getIdProduct()),
@@ -95,13 +99,12 @@ public class OrderController {
                     stockService.saveStock(validateStock.calculateBalance(stock));
                 }
         );
-        
-
+      //service que envia un email de confirmacion de la orden 
         cartServices.removeAllItemsCart();
-       // attributes.addFlashAttribute("id", httpSession.getAttribute("iduser").toString());
-        //attributes.addFlashAttribute("nombre", httpSession.getAttribute("name").toString());
-       
-       return "redirect:/home";
+        attributes.addFlashAttribute("id", httpSession.getAttribute("iduser").toString());
+        attributes.addFlashAttribute("nombre", httpSession.getAttribute("name").toString());
+
+        return "redirect:/home";
     }
-    
+
 }

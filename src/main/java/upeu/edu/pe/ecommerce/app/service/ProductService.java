@@ -4,6 +4,7 @@
  */
 package upeu.edu.pe.ecommerce.app.service;
 
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,25 +28,22 @@ public class ProductService {
         this.uploadFile = uploadFile;
     }
 
-    
-
-
     public Iterable<ProductEntity> getProducts() {
-       return productRepository.getProducts();
+        return productRepository.getProducts();
     }
 
     public Iterable<ProductEntity> getProductsByUser(UserEntity userEntity) {
-      return productRepository.getProductsByUser(userEntity);
+        return productRepository.getProductsByUser(userEntity);
     }
 
     public ProductEntity getProductById(Integer id) {
-      return productRepository.getProductById(id);
+        return productRepository.getProductById(id);
     }
 
-    public ProductEntity saveProduct(ProductEntity productEntity,MultipartFile multipartFile) throws IOException {
+    public ProductEntity saveProduct(ProductEntity productEntity, MultipartFile multipartFile, HttpSession httpSession) throws IOException {
         if (productEntity.getId() == null) {
             UserEntity user = new UserEntity();
-            user.setId(1);
+            user.setId(Integer.parseInt(httpSession.getAttribute("iduser").toString()));
             productEntity.setDateCreated(LocalDateTime.now());
             productEntity.setDateUpdated(LocalDateTime.now());
             productEntity.setUserEntity(user);
@@ -74,6 +72,6 @@ public class ProductService {
     }
 
     public boolean deleteProductById(Integer id) {
-      return productRepository.deleteProductById(id);
+        return productRepository.deleteProductById(id);
     }
 }

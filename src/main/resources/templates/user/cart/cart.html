@@ -7,7 +7,7 @@
 
         <!-- Navigation -->
         <div th:insert ="~{user/template_user::header_user}" th:if="${id==null}"></div>
-
+        <div th:insert ="~{user/template_user::userlogged}" th:unless="${id==null}"></div>
         <!-- Page Content -->
         <div class="container mt-5">
 
